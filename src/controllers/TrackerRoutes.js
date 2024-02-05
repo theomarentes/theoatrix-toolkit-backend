@@ -18,8 +18,7 @@ router.get('/1', async (request, response) => {
 router.get('/:rsn', async (request, response) => {
     const getTracker = await fetchPlayerData(request.params.rsn)
     response.json({
-        getTracker
-
+        "data": getTracker
     });
 });
 

@@ -5,10 +5,11 @@ async function fetchPlayerData(username) {
   let targetTracker = await Tracker.findOne({username: username});
   const currentDatetime = new Date();
   const currentUnix = currentDatetime.getTime()
+  let lastFetchedUnix = 0;
   if (targetTracker) {
-    const lastFetchedUnix = targetTracker.fetchedAt.getTime() 
+    lastFetchedUnix = targetTracker.fetchedAt.getTime() 
   } else {
-    const lastFetchedUnix = 0
+    lastFetchedUnix = 0
   }
   
   if ( !targetTracker) {
@@ -23,7 +24,7 @@ async function fetchPlayerData(username) {
       return dataWithDatetime
     } catch (error) {
       console.error('Error fetching player data:', error);
-      return null;
+      return "Player Not Found";
     } 
   } else if (currentUnix - lastFetchedUnix >= 600) {
     try {

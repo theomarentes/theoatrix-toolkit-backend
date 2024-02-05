@@ -35,9 +35,11 @@ var databaseURL = "";
 switch (process.env.NODE_ENV.toLowerCase()) {
     case "test":
         databaseURL = "";
+        databaseURL = process.env.DATABASE_URL;
         break;
     case "development":
         databaseURL = "";
+        databaseURL = process.env.DATABASE_URL;
         break;
     case "production":
         databaseURL = process.env.DATABASE_URL;
@@ -57,8 +59,8 @@ databaseConnector(databaseURL).then(() => {
 });
 
 
-const usersController = require("./controllers/UserRoutes");
-app.use("/users", usersController);
+const trackerController = require("./controllers/TrackerRoutes");
+app.use("/tracker", trackerController);
 
 app.get("/databaseDump", async (request, response) => {
 

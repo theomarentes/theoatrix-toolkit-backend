@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const TrackerSchema = new mongoose.Schema({
+    "fetchedAt" :{
+        "type": "Date"
+    },
     "id": {
       "type": "Number"
     },

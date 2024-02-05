@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { databaseConnector } = require('./database');
-const { fetchPlayerData } = require("./functions/TrackerFunctions.js")
+const { fetchPlayerData } = require("./controllers/functions/TrackerFunctions.js")
 
 const { User } = require('./models/UserModel');
 

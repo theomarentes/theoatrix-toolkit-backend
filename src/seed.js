@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const { databaseConnector } = require('./database');
+const { fetchPlayerData } = require("./functions/TrackerFunctions.js")
 
 const { User } = require('./models/UserModel');
 
 const dotenv = require('dotenv');
+const { Tracker } = require('./models/TrackerModel.js');
 dotenv.config();
 
 
@@ -16,15 +18,19 @@ const users = [
 
 ];
 
+const zezima = fetchPlayerData("Zezima")
 
 
 var databaseURL = "";
 switch (process.env.NODE_ENV.toLowerCase()) {
     case "test":
         databaseURL = "";
+        databaseURL = process.env.DATABASE_URL;
+        
         break;
     case "development":
-        databaseURL = "";
+        databaseURL = ""
+        databaseURL = process.env.DATABASE_URL;
         break;
     case "production":
         databaseURL = process.env.DATABASE_URL;
@@ -53,7 +59,7 @@ databaseConnector(databaseURL).then(() => {
         console.log("Old DB data deleted.");
     }
 }).then(async () => {
-    await Role.insertMany(roles);
+    await Tracker.create(await zezima);
 
     console.log("New DB data created.");
 }).then(() => {

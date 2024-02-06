@@ -22,6 +22,13 @@ router.get('/:rsn', async (request, response) => {
     });
 });
 
+router.post('/:rsn', async (request, response) => {
+    const postTracker = await updatePlayerData(request.params.rsn)
+    response.json({
+        "data": postTracker
+    });
+});
+
 
 // Export the router so that other files can use it:
 module.exports = router;

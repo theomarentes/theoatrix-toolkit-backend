@@ -19,6 +19,8 @@ const users = [
 ];
 
 const zezima = fetchPlayerData("Zezima")
+const theoatrix = fetchPlayerData("Theoatrix")
+const uim_theo = fetchPlayerData("UIM Theo")
 
 
 var databaseURL = "";
@@ -60,6 +62,8 @@ databaseConnector(databaseURL).then(() => {
     }
 }).then(async () => {
     await Tracker.create(await zezima);
+    await Tracker.create(await theoatrix);
+    await Tracker.create(await uim_theo);
 
     console.log("New DB data created.");
 }).then(() => {

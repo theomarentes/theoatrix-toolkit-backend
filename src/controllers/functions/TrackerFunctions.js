@@ -55,5 +55,5 @@ async function fetchPlayerData(username) {
 }
 
 module.exports = {
-    fetchPlayerData, getAllTrackers
+    fetchPlayerData, getAllTrackers, updatePlayerData
 }

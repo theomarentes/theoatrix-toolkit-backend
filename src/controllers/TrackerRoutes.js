@@ -3,7 +3,7 @@ const express = require('express');
 // Create an instance of an Express Router
 const router = express.Router();
 
-const { getAllTrackers, fetchPlayerData } = require("./functions/TrackerFunctions.js")
+const { getAllTrackers, fetchPlayerData, updatePlayerData } = require("./functions/TrackerFunctions.js")
 
 const { Tracker } = require('../models/TrackerModel.js');
 

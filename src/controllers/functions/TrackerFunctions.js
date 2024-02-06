@@ -10,7 +10,12 @@ async function fetchPlayerData(username) {
   const currentUnix = currentDatetime.getTime()
   let lastFetchedUnix = 0;
   if (targetTracker) {
-    lastFetchedUnix = targetTracker.updatedAt.getTime() 
+    if (targetTracker.updatedAt == null) {
+      lastFetchedUnix = 0
+    } else {
+      lastFetchedUnix = targetTracker.updatedAt.getTime() 
+    }
+    
   } else {
     lastFetchedUnix = 0
   }
@@ -34,15 +39,16 @@ async function fetchPlayerData(username) {
       console.error('Error fetching player data:', error);
       return "Player Not Found";
     } 
-  } else if (currentUnix - lastFetchedUnix >= 600) {
+  } else if (currentUnix - lastFetchedUnix >= 3600) {
     try {
       try {
       const playerDetails = await client.players.updatePlayer(username);
+      console.log(await playerDetails)
       } catch (error) {
         
       }
       const response = await axios.get('https://api.wiseoldman.net/v2/players/'+username);
-      
+      console.log(await response)
       const dataWithDatetime = {
           ...response.data,
           fetchedAt: await currentDatetime 
@@ -56,7 +62,7 @@ async function fetchPlayerData(username) {
     } 
   }
   else {
-    return targetTracker
+    return await targetTracker
   }
 
   }

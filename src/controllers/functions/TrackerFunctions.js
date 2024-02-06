@@ -1,5 +1,8 @@
 const { default: axios } = require("axios");
 const { Tracker } = require("../../models/TrackerModel");
+const { WOMClient } = require('@wise-old-man/utils');
+
+const client = new WOMClient();
 
 async function fetchPlayerData(username) {
   let targetTracker = await Tracker.findOne({username: username});
@@ -7,13 +10,18 @@ async function fetchPlayerData(username) {
   const currentUnix = currentDatetime.getTime()
   let lastFetchedUnix = 0;
   if (targetTracker) {
-    lastFetchedUnix = targetTracker.fetchedAt.getTime() 
+    lastFetchedUnix = targetTracker.updatedAt.getTime() 
   } else {
     lastFetchedUnix = 0
   }
   
   if ( !targetTracker) {
     try {
+      try {
+        const playerDetails = await client.players.updatePlayer(username);
+        } catch (error) {
+          
+        }
       const response = await axios.get('https://api.wiseoldman.net/v2/players/'+username);
 
       const dataWithDatetime = {
@@ -28,8 +36,13 @@ async function fetchPlayerData(username) {
     } 
   } else if (currentUnix - lastFetchedUnix >= 600) {
     try {
+      try {
+      const playerDetails = await client.players.updatePlayer(username);
+      } catch (error) {
+        
+      }
       const response = await axios.get('https://api.wiseoldman.net/v2/players/'+username);
-
+      
       const dataWithDatetime = {
           ...response.data,
           fetchedAt: await currentDatetime 
@@ -49,29 +62,20 @@ async function fetchPlayerData(username) {
   }
 
   async function updatePlayerData(username) {
-    let targetTracker = await Tracker.findOne({username: username});
     const currentDatetime = new Date();
-    const currentUnix = currentDatetime.getTime()
-    let lastFetchedUnix = 0;
-    if (targetTracker) {
-      lastFetchedUnix = targetTracker.updatedAt.getTime() 
-    } else {
-      lastFetchedUnix = 0
-    }
-    
-    
       try {
-        const response = await axios.post('https://api.wiseoldman.net/v2/players/'+username);
+        const playerDetails = await client.players.updatePlayer(username);
+
   
         const dataWithDatetime = {
-            ...response.data,
+            ...playerDetails,
             fetchedAt: await currentDatetime 
         };
         return dataWithDatetime
 
       } catch (error) {
         console.error('Error fetching player data:', error);
-        return "Player Not Found";
+        return error;
       } 
     }
  

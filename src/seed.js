@@ -18,9 +18,7 @@ const users = [
 
 ];
 
-const zezima = fetchPlayerData("Zezima")
-const theoatrix = fetchPlayerData("Theoatrix")
-const uim_theo = fetchPlayerData("UIM Theo")
+
 
 
 var databaseURL = "";
@@ -61,9 +59,9 @@ databaseConnector(databaseURL).then(() => {
         console.log("Old DB data deleted.");
     }
 }).then(async () => {
-    await Tracker.create(await zezima);
-    await Tracker.create(await theoatrix);
-    await Tracker.create(await uim_theo);
+    const zezima = await fetchPlayerData("Zezima")
+    const theoatrix = await fetchPlayerData("Theoatrix")
+    const uim_theo = await fetchPlayerData("UIM Theo")
 
     console.log("New DB data created.");
 }).then(() => {

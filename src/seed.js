@@ -14,19 +14,19 @@ dotenv.config();
 const users = [
     {
         email: "theoatrix@gmail.com",
-        password: hashString("password"),
+        password: ("password"),
         rsn: "Theoatrix",
-        favourites: ["1","2"]
+        favourites: ["/time-to-max","/account-tracker"]
     },
     {
         email: "bob@gmail.com",
-        password: hashString("password"),
+        password: ("password"),
         rsn: "Bob",
         favourites: ["1","2"]
     },
     {
         email: "frank@gmail.com",
-        password: hashString("password"),
+        password: ("password"),
         rsn: "Frank",
         favourites: ["1","2"]
     }

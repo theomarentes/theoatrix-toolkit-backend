@@ -12,12 +12,7 @@ const {
 } = require('./functions/UserFunctions.js');
 
 router.use(express.json());
-const cors = require('cors');
-var corsOptions = {
-    origin: ["http://localhost:3000", "https://toolkit.theoatrix.net", "https://stunning-empanada-010d7f.netlify.app"],
-    optionsSuccessStatus: 200
-}
-router.use(cors(corsOptions));
+
 
 
 

@@ -82,7 +82,7 @@ router.put('/:userID', async (request, response) => {
 
 
 const verifyJwtHeader = async (request, response, next) => {
-    let rawJwtHeader = request.headers.jwt;
+    let rawJwtHeader = request.headers.Authorization;
     
     if (rawJwtHeader) {
     let jwtRefresh = await verifyUserJWT(rawJwtHeader);
@@ -96,7 +96,7 @@ const verifyJwtHeader = async (request, response, next) => {
 
 const verifyJwt = async (request, response, next) => {
     // Verify that the JWT is still valid.
-    if (request.headers.jwt) {
+    if (request.headers.Authorization) {
     let userJwtVerified = jwt.verify(request.headers.jwt,process.env.JWT_SECRET, {complete: true});
     // Decrypt the encrypted payload.
     let decryptedJwtPayload = decryptString(userJwtVerified.payload.data);

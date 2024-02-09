@@ -119,7 +119,7 @@ router.get('/me',  verifyJwt, (request, response) => {
 
 router.post('/add-favourite', verifyJwt, async (request, response) => {
     const { url } = request.body; // Assuming the favorite URL is sent in the request body
-    const userId = request.userData.user._id; // Extract user ID from userData added by verifyJwt middleware
+    const userId = request.userData._id; // Extract user ID from userData added by verifyJwt middleware
 
     if (!url) {
         return response.status(400).json({ message: "No URL provided." });

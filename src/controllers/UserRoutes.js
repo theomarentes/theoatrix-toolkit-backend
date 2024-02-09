@@ -24,9 +24,19 @@ router.post('/sign-up', async (request, response) => {
     }
     let newUserDoc = await createUser(userDetails);
 
-    response.json({
-        user: newUserDoc
-    });
+       let encryptedUserJwt = await generateUserJWT(
+                {
+                    _id: newUserDoc._id,
+                    email: newUserDoc.email,
+                    password: newUserDoc.password
+                }
+            );
+    
+            response.json({
+                "token": encryptedUserJwt
+            });
+                    
+
 
 });
 

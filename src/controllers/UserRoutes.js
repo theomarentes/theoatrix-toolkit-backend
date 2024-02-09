@@ -107,18 +107,10 @@ const verifyJwt = async (request, response, next) => {
     next();
 }
 
-// The actual authorization middleware.
-// Throw to the error-handling middleware
-// if the user is not authorized.
-// Different middleware can be made for
-// different roles, just like this.
 
-// All involved middleware must be attached to either
-// the app (Express instance), or the router (Express router instance)
-// or the specific route.
-router.get('/me', verifyJwtHeader, verifyJwt, (request, response) => {
+router.get('/me',  verifyJwt, (request, response) => {
     
-    // No actual functionality here - focus on the middleware!
+   
     response.json({user: request.userData});
 });
 

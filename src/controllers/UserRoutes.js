@@ -129,7 +129,7 @@ router.post('/add-favourite', verifyJwt, async (request, response) => {
         // Find the user and update their document by adding the URL to their favourites array
         // $addToSet ensures the URL is added only if it's not already present, to avoid duplicates
         const updatedUser = await User.findByIdAndUpdate(
-            userId,
+            {"_id": userId},
             { $addToSet: { favourites: url } },
             { new: true } // Return the updated document
         );

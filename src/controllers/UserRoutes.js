@@ -33,7 +33,7 @@ router.post('/sign-up', async (request, response) => {
 
 router.post('/sign-in', async (request, response) => {
     let targetUser = await User.findOne({email: request.body.email}).exec();
-
+    if (targetUser) {
     if (await validateHashedData(request.body.password, targetUser.password)){
         let encryptedUserJwt = await generateUserJWT(
             {
@@ -47,7 +47,7 @@ router.post('/sign-in', async (request, response) => {
 
     } else {
         response.status(400).json({message:"Invalid user details provided."});
-    }
+    } }
 });
 
 // FIX

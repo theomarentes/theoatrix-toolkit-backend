@@ -96,15 +96,8 @@ const verifyJwt = async (request, response, next) => {
     // Decrypt the encrypted payload.
     let decryptedJwtPayload = decryptString(userJwtVerified.payload.data);
     // Parse the decrypted data into an object.
-    let userData = JSON.parse(decryptedJwtPayload);
-    
-    // Because the JWT doesn't include role info, we must find the full user document first:
-    let userDoc = await User.find({email: userData.email}).exec();
+    request.userData = JSON.parse(decryptedJwtPayload);
 
-    // Attach the role to the request for the backend to use.
-    // Note that the user's role will never be available on the front-end
-    // with this technique.
-    // This means they can't just manipulate the JWT to access admin stuff.
 
     next();
 }
@@ -121,7 +114,7 @@ const verifyJwt = async (request, response, next) => {
 router.get('/me', verifyJwtHeader, verifyJwt, (request, response) => {
     
     // No actual functionality here - focus on the middleware!
-    response.json(request);
+    response.json({user: request.userData});
 });
 
 // Export the router so that other files can use it:

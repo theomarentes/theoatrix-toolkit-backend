@@ -68,17 +68,7 @@ router.put('/:userID', async (request, response) => {
 });
 
 
-// FIX
-router.delete('/:userID', async (request, response) => {
-    response.json(await deleteUser(request.params.userID));
-});
 
-
-
-// FIX
-router.get('/:userID', async (request, response) => {
-    response.json(await getSpecificUser(request.params.userID));
-});
 
 const verifyJwtHeader = async (request, response, next) => {
     let rawJwtHeader = request.headers.jwt;

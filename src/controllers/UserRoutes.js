@@ -12,11 +12,16 @@ const {
 } = require('./functions/UserFunctions.js');
 
 router.use(express.json());
+const cors = require('cors');
+var corsOptions = {
+    origin: ["http://localhost:3000", "https://toolkit.theoatrix.net", "https://stunning-empanada-010d7f.netlify.app"],
+    optionsSuccessStatus: 200
+}
+router.use(cors(corsOptions));
 
 
 
 
-// Sign-up a new user
 router.post('/sign-up', async (request, response) => {
     let userDetails = {
         email: request.body.email,
@@ -30,7 +35,7 @@ router.post('/sign-up', async (request, response) => {
 
 });
 
-// Sign-in an existing user
+
 router.post('/sign-in', async (request, response) => {
     let targetUser = await User.findOne({email: request.body.email}).exec();
 
@@ -50,42 +55,36 @@ router.post('/sign-in', async (request, response) => {
     }
 });
 
-// Extend a user's JWT validity
+// FIX
 router.post('/token-refresh', async(request, response) => {
     let oldToken = request.body.jwt;
     let refreshResult = await verifyUserJWT(oldToken).catch(error => {return {error: error.message}})
     response.json(refreshResult);
 });
 
-// Update a user
+// FIX
 router.put('/:userID', async (request, response) => {
     let userDetails = {
-        userID: request.params.userID,
+        _id: request.params.userID,
         updatedData: request.body.newUserData
     };
 
     response.json(await updateUser(userDetails));
 });
 
-// Delete a user
+
+// FIX
 router.delete('/:userID', async (request, response) => {
     response.json(await deleteUser(request.params.userID));
 });
 
-// List all users
-router.get('/', async (request, response) => {
-    let allUsers = await getAllUsers();
 
-    response.json({
-        userCount: allUsers.length,
-        usersArray: allUsers
-    });
-});
 
-// Show a specific user
+// FIX
 router.get('/:userID', async (request, response) => {
     response.json(await getSpecificUser(request.params.userID));
 });
+
 
 // Export the router so that other files can use it:
 module.exports = router;

@@ -77,7 +77,7 @@ async function verifyUserJWT(userJWT){
     // Parse the decrypted data into an object.
     let userData = JSON.parse(decryptedJwtPayload);
     // Find the user mentioned in the JWT.
-    let targetUser = await User.findById(userData.userID).exec();
+    let targetUser = await User.findOne({email: userData.email}).exec();
     // If the JWT data matches the stored data...
     if (targetUser.password == userData.password && targetUser.email == userData.email){
         // ...User details are valid, make a fresh JWT to extend their token's valid time

@@ -116,5 +116,35 @@ router.get('/me',  verifyJwt, (request, response) => {
     response.json({user: request.userData});
 });
 
+
+router.post('/add-favourite', verifyJwt, async (request, response) => {
+    const { url } = request.body; // Assuming the favorite URL is sent in the request body
+    const userId = request.userData._id; // Extract user ID from userData added by verifyJwt middleware
+
+    if (!url) {
+        return response.status(400).json({ message: "No URL provided." });
+    }
+
+    try {
+        // Find the user and update their document by adding the URL to their favourites array
+        // $addToSet ensures the URL is added only if it's not already present, to avoid duplicates
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { favourites: url } },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedUser) {
+            return response.status(404).json({ message: "User not found." });
+        }
+
+        response.json({ message: "Favourite added successfully.", user: updatedUser });
+    } catch (error) {
+        console.error('Error adding favourite:', error);
+        response.status(500).json({ message: "An error occurred while adding the favourite." });
+    }
+});
+
+
 // Export the router so that other files can use it:
 module.exports = router;

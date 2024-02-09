@@ -85,6 +85,49 @@ router.get('/:userID', async (request, response) => {
     response.json(await getSpecificUser(request.params.userID));
 });
 
+const verifyJwtHeader = async (request, response, next) => {
+    let rawJwtHeader = request.headers.jwt;
+
+    let jwtRefresh = await verifyUserJWT(rawJwtHeader);
+
+    request.headers.jwt = jwtRefresh;
+
+    next();
+}
+
+const verifyJwt = async (request, response, next) => {
+    // Verify that the JWT is still valid.
+    let userJwtVerified = jwt.verify(request.headers.jwt,process.env.JWT_SECRET, {complete: true});
+    // Decrypt the encrypted payload.
+    let decryptedJwtPayload = decryptString(userJwtVerified.payload.data);
+    // Parse the decrypted data into an object.
+    let userData = JSON.parse(decryptedJwtPayload);
+    
+    // Because the JWT doesn't include role info, we must find the full user document first:
+    let userDoc = await User.findById(userData._id).exec();
+
+    // Attach the role to the request for the backend to use.
+    // Note that the user's role will never be available on the front-end
+    // with this technique.
+    // This means they can't just manipulate the JWT to access admin stuff.
+
+    next();
+}
+
+// The actual authorization middleware.
+// Throw to the error-handling middleware
+// if the user is not authorized.
+// Different middleware can be made for
+// different roles, just like this.
+
+// All involved middleware must be attached to either
+// the app (Express instance), or the router (Express router instance)
+// or the specific route.
+router.get('/me', verifyJwtHeader, verifyJwt, (request, response) => {
+    
+    // No actual functionality here - focus on the middleware!
+    response.json(request);
+});
 
 // Export the router so that other files can use it:
 module.exports = router;

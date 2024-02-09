@@ -40,6 +40,9 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 async function hashString(stringToHash){
+    if (!stringToHash) {
+        throw new Error('No string provided for hashing');
+    }
     let saltToAdd = await bcrypt.genSalt(saltRounds);
     return await bcrypt.hash(stringToHash, saltToAdd);
 }
@@ -111,10 +114,7 @@ async function createUser(userDetails){
     let newUser = new User(
         { 
             email: userDetails.email,
-            password: userDetails.hashedPassword,
-            username: userDetails.username,
-            country: userDetails.country,
-            role: userDetails.roleID
+            password: userDetails.hashedPassword
         }
     )
     

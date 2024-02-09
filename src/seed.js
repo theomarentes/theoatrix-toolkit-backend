@@ -6,6 +6,7 @@ const { User } = require('./models/UserModel');
 
 const dotenv = require('dotenv');
 const { Tracker } = require('./models/TrackerModel.js');
+const { hashString } = require('./controllers/functions/UserFunctions.js');
 dotenv.config();
 
 
@@ -13,7 +14,21 @@ dotenv.config();
 const users = [
     {
         email: "theoatrix@gmail.com",
-        password: "password"
+        password: hashString("password"),
+        rsn: "Theoatrix",
+        favourites: ["1","2"]
+    },
+    {
+        email: "bob@gmail.com",
+        password: hashString("password"),
+        rsn: "Bob",
+        favourites: ["1","2"]
+    },
+    {
+        email: "frank@gmail.com",
+        password: hashString("password"),
+        rsn: "Frank",
+        favourites: ["1","2"]
     }
 
 ];
@@ -62,6 +77,8 @@ databaseConnector(databaseURL).then(() => {
     const zezima = await fetchPlayerData("Zezima")
     const theoatrix = await fetchPlayerData("Theoatrix")
     const uim_theo = await fetchPlayerData("UIM Theo")
+    await User.insertMany(users)
+
 
     console.log("New DB data created.");
 }).then(() => {

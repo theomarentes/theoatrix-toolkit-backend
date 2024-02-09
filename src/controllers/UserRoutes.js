@@ -99,7 +99,7 @@ const verifyJwt = async (request, response, next) => {
     let userData = JSON.parse(decryptedJwtPayload);
     
     // Because the JWT doesn't include role info, we must find the full user document first:
-    let userDoc = await User.findById(userData._id).exec();
+    let userDoc = await User.find({email: userData.email}).exec();
 
     // Attach the role to the request for the backend to use.
     // Note that the user's role will never be available on the front-end

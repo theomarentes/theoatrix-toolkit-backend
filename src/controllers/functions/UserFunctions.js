@@ -99,10 +99,10 @@ async function getAllUsers(){
 
 }
 
-async function getSpecificUser(userID){
+/* async function getSpecificUser(userID){
     // Returns the raw MongoDB database document.
     return await User.findById(userID);
-}
+} */
 
 async function createUser(userDetails){
 

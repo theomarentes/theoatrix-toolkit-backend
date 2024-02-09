@@ -119,7 +119,7 @@ router.get('/me',  verifyJwt, (request, response) => {
 
 router.post('/add-favourite', verifyJwt, async (request, response) => {
     const { url } = request.body; // Assuming the favorite URL is sent in the request body
-    const userId = request.userData._id; // Extract user ID from userData added by verifyJwt middleware
+    const userId = request.userData.user._id; // Extract user ID from userData added by verifyJwt middleware
 
     if (!url) {
         return response.status(400).json({ message: "No URL provided." });
@@ -129,7 +129,7 @@ router.post('/add-favourite', verifyJwt, async (request, response) => {
         // Find the user and update their document by adding the URL to their favourites array
         // $addToSet ensures the URL is added only if it's not already present, to avoid duplicates
         const updatedUser = await User.findByIdAndUpdate(
-            {"_id": userId},
+            userId,
             { $addToSet: { favourites: url } },
             { new: true } // Return the updated document
         );

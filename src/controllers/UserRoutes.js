@@ -8,7 +8,7 @@ const { User } = require('../models/UserModel');
 const {
     encryptString, decryptString, decryptObject, hashString, validateHashedData, 
     generateJWT, generateUserJWT, verifyUserJWT, 
-    getAllUsers, getSpecificUser, createUser, updateUser, deleteUser
+    getAllUsers, createUser, updateUser, deleteUser
 } = require('./functions/UserFunctions.js');
 
 router.use(express.json());

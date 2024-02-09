@@ -139,5 +139,5 @@ async function deleteUser(userID){
 module.exports = {
     encryptString, decryptString, decryptObject, hashString, validateHashedData, 
     generateJWT, generateUserJWT, verifyUserJWT, 
-    getAllUsers, getSpecificUser, createUser, updateUser, deleteUser
+    getAllUsers,  createUser, updateUser, deleteUser
 }

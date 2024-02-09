@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 const { User } = require('../models/UserModel');
-
+const jwt = require('jsonwebtoken');
 const {
     encryptString, decryptString, decryptObject, hashString, validateHashedData, 
     generateJWT, generateUserJWT, verifyUserJWT, 
@@ -72,6 +72,7 @@ router.put('/:userID', async (request, response) => {
 
 const verifyJwtHeader = async (request, response, next) => {
     let rawJwtHeader = request.headers.jwt;
+    
 
     let jwtRefresh = await verifyUserJWT(rawJwtHeader);
 

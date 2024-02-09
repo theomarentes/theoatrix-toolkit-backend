@@ -62,6 +62,9 @@ databaseConnector(databaseURL).then(() => {
 const trackerController = require("./controllers/TrackerRoutes");
 app.use("/tracker", trackerController);
 
+const userController = require("./controllers/UserRoutes");
+app.use("/user", userController);
+
 app.get("/databaseDump", async (request, response) => {
 
     const dumpContainer = {};

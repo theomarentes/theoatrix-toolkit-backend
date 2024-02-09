@@ -11,6 +11,8 @@ const {
     getAllUsers, getSpecificUser, createUser, updateUser, deleteUser
 } = require('./functions/UserFunctions.js');
 
+router.use(express.json());
+
 
 
 
@@ -18,10 +20,7 @@ const {
 router.post('/sign-up', async (request, response) => {
     let userDetails = {
         email: request.body.email,
-        password: request.body.password,
-        username: request.body.username,
-        country: request.body.country,
-        roleID: request.body.roleID
+        password: request.body.password
     }
     let newUserDoc = await createUser(userDetails);
 
@@ -38,7 +37,7 @@ router.post('/sign-in', async (request, response) => {
     if (await validateHashedData(request.body.password, targetUser.password)){
         let encryptedUserJwt = await generateUserJWT(
             {
-                userID: targetUser.id,
+                _id: targetUser._id,
                 email: targetUser.email,
                 password: targetUser.password
             }

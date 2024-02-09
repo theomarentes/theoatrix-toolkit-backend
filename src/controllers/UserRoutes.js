@@ -28,7 +28,8 @@ router.post('/sign-up', async (request, response) => {
                 {
                     _id: newUserDoc._id,
                     email: newUserDoc.email,
-                    password: newUserDoc.password
+                    password: newUserDoc.password,
+                    favourites: newUserDoc.favourites
                 }
             );
     
@@ -49,7 +50,8 @@ router.post('/sign-in', async (request, response) => {
             {
                 _id: targetUser._id,
                 email: targetUser.email,
-                password: targetUser.password
+                password: targetUser.password,
+                favourites: newUserDoc.favourites
             }
         );
 

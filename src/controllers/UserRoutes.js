@@ -43,7 +43,8 @@ router.post('/sign-in', async (request, response) => {
             }
         );
 
-        response.json(encryptedUserJwt);
+        response.json({
+    "token": encryptedUserJwt});
 
     } else {
         response.status(400).json({message:"Invalid user details provided."});

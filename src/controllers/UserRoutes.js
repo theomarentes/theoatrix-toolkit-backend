@@ -110,10 +110,19 @@ const verifyJwt = async (request, response, next) => {
 }
 
 
-router.get('/me',  verifyJwt, (request, response) => {
-    
-   
-    response.json({user: request.userData});
+router.get('/me', verifyJwt, async (request, response) => {
+    const userId = request.userData._id; // Extract user ID from userData added by verifyJwt middleware
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return response.status(404).json({ message: "User not found." });
+        }
+        response.json({ user: user }); // This now includes the full user document, including favourites
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        response.status(500).json({ message: "An error occurred while fetching user data." });
+    }
 });
 
 

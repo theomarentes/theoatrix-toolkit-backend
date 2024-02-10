@@ -10,8 +10,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    rsn: String,
-    favourites: [String]
+    rsn: {
+        type: String
+    },
+    favourites: {
+        type: [String]
+    },
 });
 
 const User = mongoose.model('User', UserSchema);

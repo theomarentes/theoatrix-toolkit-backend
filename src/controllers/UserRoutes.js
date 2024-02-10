@@ -154,6 +154,33 @@ router.post('/add-favourite', verifyJwt, async (request, response) => {
     }
 });
 
+router.post('/remove-favourite', verifyJwt, async (request, response) => {
+    const { url } = request.body; // Assuming the favorite URL is sent in the request body
+    const userId = request.userData._id; // Extract user ID from userData added by verifyJwt middleware
+
+    if (!url) {
+        return response.status(400).json({ message: "No URL provided." });
+    }
+
+    try {
+         const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $pull: { favourites: url } },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return response.status(404).json({ message: "User not found." });
+        }
+
+        response.json({ message: "Favourite removed successfully.", user: updatedUser });
+    } catch (error) {
+        console.error('Error removing favourite:', error);
+        response.status(500).json({ message: "An error occurred while removing the favourite." });
+    }
+});
+
+
 
 // Export the router so that other files can use it:
 module.exports = router;

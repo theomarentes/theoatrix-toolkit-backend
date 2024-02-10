@@ -18,50 +18,66 @@ router.use(express.json());
 
 
 router.post('/sign-up', async (request, response) => {
-    let userDetails = {
-        email: request.body.email,
-        password: request.body.password
+    const { email, password } = request.body;
+
+    try {
+        const existingUser = await User.findOne({ email: email }).exec();
+        if (existingUser) {
+            return response.status(409).json({ message: "User already exists with the provided email." });
+        }
+
+        
+        let userDetails = { email, password };
+        let newUserDoc = await createUser(userDetails);
+
+        let encryptedUserJwt = await generateUserJWT({
+            _id: newUserDoc._id,
+            email: newUserDoc.email,
+            favourites: newUserDoc.favourites
+        });
+
+        response.json({
+            "token": encryptedUserJwt
+        });
+
+    } catch (error) {
+        console.error('Error during sign-up:', error);
+        response.status(500).json({ message: "An error occurred during sign-up." });
     }
-    let newUserDoc = await createUser(userDetails);
-
-       let encryptedUserJwt = await generateUserJWT(
-                {
-                    _id: newUserDoc._id,
-                    email: newUserDoc.email,
-                    password: newUserDoc.password,
-                    favourites: newUserDoc.favourites
-                }
-            );
-    
-            response.json({
-                "token": encryptedUserJwt
-            });
-                    
-
-
 });
+
 
 
 router.post('/sign-in', async (request, response) => {
-    let targetUser = await User.findOne({email: request.body.email}).exec();
-    if (targetUser) {
-    if (await validateHashedData(request.body.password, targetUser.password)){
-        let encryptedUserJwt = await generateUserJWT(
-            {
-                _id: targetUser._id,
-                email: targetUser.email,
-                password: targetUser.password,
-                favourites: newUserDoc.favourites
-            }
-        );
+    try {
+        const { email, password } = request.body;
+        const targetUser = await User.findOne({ email }).exec();
 
-        response.json({
-    "token": encryptedUserJwt});
+        // Check if user exists
+        if (!targetUser) {
+            return response.status(404).json({ message: "User not found." });
+        }
 
-    } else {
-        response.status(400).json({message:"Invalid user details provided."});
-    } }
+        // Validate password
+        const isPasswordValid = await validateHashedData(password, targetUser.password);
+        if (!isPasswordValid) {
+            return response.status(401).json({ message: "Incorrect password." });
+        }
+
+        // Generate JWT without including the password
+        const encryptedUserJwt = await generateUserJWT({
+            _id: targetUser._id,
+            email: targetUser.email,
+            favourites: targetUser.favourites
+        });
+
+        response.json({ "token": encryptedUserJwt });
+    } catch (error) {
+        console.error('Error during sign-in:', error);
+        response.status(500).json({ message: "An error occurred during sign-in." });
+    }
 });
+
 
 // FIX
 router.post('/token-refresh', async(request, response) => {

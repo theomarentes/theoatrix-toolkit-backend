@@ -1,4 +1,7 @@
+const fs = require('fs').promises;
 const mongoose = require('mongoose');
+const path = require('path');
+
 const { databaseConnector } = require('./database');
 const { fetchPlayerData } = require("./controllers/functions/TrackerFunctions.js")
 
@@ -6,6 +9,7 @@ const { User } = require('./models/UserModel');
 
 const dotenv = require('dotenv');
 const { Tracker } = require('./models/TrackerModel.js');
+const { Simulator } = require('./models/SimulatorModel.js');
 const { hashString } = require('./controllers/functions/UserFunctions.js');
 dotenv.config();
 
@@ -33,7 +37,25 @@ const users = [
 
 ];
 
-
+async function saveMonstersToDatabase() {
+    try {
+ 
+      const data = await fs.readFile(path.resolve(__dirname, 'files', 'monsters-complete.json'), 'utf8');
+      const monsters = JSON.parse(data);
+        
+  
+   
+      if (monsters) {
+      
+        await Simulator.create(monsters)
+        console.log('Monsters data saved to database successfully!');
+      } else {
+        console.log('No monsters data found to save to database.');
+      }
+    } catch (error) {
+      console.error('Error saving monsters to database:', error);
+    }
+  }
 
 
 var databaseURL = "";
@@ -78,7 +100,7 @@ databaseConnector(databaseURL).then(() => {
     const theoatrix = await fetchPlayerData("Theoatrix")
     const uim_theo = await fetchPlayerData("UIM Theo")
     await User.insertMany(users)
-
+    await saveMonstersToDatabase()
 
     console.log("New DB data created.");
 }).then(() => {

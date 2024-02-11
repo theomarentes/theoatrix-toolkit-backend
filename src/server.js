@@ -65,6 +65,9 @@ app.use("/tracker", trackerController);
 const userController = require("./controllers/UserRoutes");
 app.use("/user", userController);
 
+const simulatorController = require("./controllers/SimulatorRoutes");
+app.use("/simulator", simulatorController);
+
 app.get("/databaseDump", async (request, response) => {
 
     const dumpContainer = {};

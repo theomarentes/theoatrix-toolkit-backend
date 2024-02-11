@@ -46,8 +46,12 @@ async function saveMonstersToDatabase() {
   
    
       if (monsters) {
-      
-        await Simulator.create(monsters)
+        for (var monster in monsters) {
+            if (monsters[monster].duplicate === false){
+            await Simulator.create(monsters[monster])
+            }
+        }
+       
         console.log('Monsters data saved to database successfully!');
       } else {
         console.log('No monsters data found to save to database.');
@@ -91,11 +95,14 @@ databaseConnector(databaseURL).then(() => {
 
         collections.map((collection) => collection.name)
         .forEach(async (collectionName) => {
+           
             mongoose.connection.db.dropCollection(collectionName);
+    
         });
         console.log("Old DB data deleted.");
     }
 }).then(async () => {
+    console.log("Please wait 2-5 minutes, seeding can take a while...");
     const zezima = await fetchPlayerData("Zezima")
     const theoatrix = await fetchPlayerData("Theoatrix")
     const uim_theo = await fetchPlayerData("UIM Theo")

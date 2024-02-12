@@ -95,9 +95,9 @@ databaseConnector(databaseURL).then(() => {
 
         collections.map((collection) => collection.name)
         .forEach(async (collectionName) => {
-           
+           if (collectionName !== "Simulator") {
             mongoose.connection.db.dropCollection(collectionName);
-    
+           }
         });
         console.log("Old DB data deleted.");
     }

@@ -3,10 +3,10 @@ const Schema = mongoose.Schema;
 
 const GrandExchangeItemSchema = new Schema({
     id: { type: Number, required: true, unique: true },
-    high: { type: Number, required: true },
-    highTime: { type: Date, required: true},
-    low: { type: Number, required: true },
-    lowTime: { type: Date, required: true }
+    high: { type: Number, required: false },
+    highTime: { type: Date, required: false},
+    low: { type: Number, required: false },
+    lowTime: { type: Date, required: false }
 });
 
 

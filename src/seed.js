@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const mongoose = require('mongoose');
 const path = require('path');
+const http = require('http');
 
 const { databaseConnector } = require('./database');
 const { fetchPlayerData } = require("./controllers/functions/TrackerFunctions.js")
@@ -11,6 +12,8 @@ const dotenv = require('dotenv');
 const { Tracker } = require('./models/TrackerModel.js');
 const { Simulator } = require('./models/SimulatorModel.js');
 const { hashString } = require('./controllers/functions/UserFunctions.js');
+const {Item} = require('./models/ItemModel.js');
+
 dotenv.config();
 
 
@@ -62,6 +65,44 @@ async function saveMonstersToDatabase() {
   }
 
 
+  async function saveItemsToDatabase() {
+    try {
+
+        const url = 'https://prices.runescape.wiki/api/v1/osrs/mapping';
+
+        const response = await fetch(url)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return res.json();
+        })
+        .catch(error => {
+            throw new Error('There was a problem with the fetch operation:', error.message);
+        });
+    
+
+        const items = response;
+        console.log(items[0])
+        if (items) {
+            for (const item of items) {
+                const existingItem = await Item.findOne({ id: item.id });
+                
+
+                if (!existingItem) {
+                    await Item.create(item);
+                }
+            }
+            
+            console.log('Items data saved to database successfully!');
+        } else {
+            console.log('No items data found to save to database.');
+        }
+    } catch (error) {
+        console.error('Error saving items to database:', error);
+    }
+}
+
 var databaseURL = "";
 switch (process.env.NODE_ENV.toLowerCase()) {
     case "test":
@@ -95,7 +136,7 @@ databaseConnector(databaseURL).then(() => {
 
         collections.map((collection) => collection.name)
         .forEach(async (collectionName) => {
-           if (collectionName !== "Simulator") {
+           if (collectionName !== "simulator" || collectionName !== "items") {
             mongoose.connection.db.dropCollection(collectionName);
            }
         });
@@ -108,6 +149,7 @@ databaseConnector(databaseURL).then(() => {
     const uim_theo = await fetchPlayerData("UIM Theo")
     await User.insertMany(users)
     await saveMonstersToDatabase()
+    await saveItemsToDatabase()
 
     console.log("New DB data created.");
 }).then(() => {

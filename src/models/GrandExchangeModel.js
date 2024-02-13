@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const itemSchema = new Schema({
-    // need to add name
+const GrandSchema = new Schema({
     itemId: { type: Number, required: true },
     highPrice: { type: Number, required: true },
     highTime: { type: Date, required: true },
@@ -10,6 +9,6 @@ const itemSchema = new Schema({
     lowTime: { type: Date, required: true }
 });
 
-const Item = mongoose.model('Item', itemSchema);
+const Grand = mongoose.model('Grand', GrandSchema);
 
-module.exports = Item;
+module.exports = Grand;

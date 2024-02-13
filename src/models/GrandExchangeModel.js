@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const GrandSchema = new Schema({
-    itemId: { type: Number, required: true },
-    highPrice: { type: Number, required: true },
-    highTime: { type: Date, required: true },
-    lowPrice: { type: Number, required: true },
+const GrandExchangeItemSchema = new Schema({
+    id: { type: Number, required: true, unique: true },
+    high: { type: Number, required: true },
+    highTime: { type: Date, required: true},
+    low: { type: Number, required: true },
     lowTime: { type: Date, required: true }
 });
 
-const Grand = mongoose.model('Grand', GrandSchema);
 
-module.exports = Grand;
+const GrandExchangeItem = mongoose.model('GrandExchangeItem', GrandExchangeItemSchema, 'grand exchange items');
+
+module.exports = {GrandExchangeItem};

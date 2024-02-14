@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const mongoose = require('mongoose');
 const path = require('path');
+const http = require('http');
 
 const { databaseConnector } = require('./database');
 const { fetchPlayerData } = require("./controllers/functions/TrackerFunctions.js")
@@ -11,6 +12,10 @@ const dotenv = require('dotenv');
 const { Tracker } = require('./models/TrackerModel.js');
 const { Simulator } = require('./models/SimulatorModel.js');
 const { hashString } = require('./controllers/functions/UserFunctions.js');
+const {Item} = require('./models/ItemModel.js');
+const {GrandExchangeItem} = require('./models/GrandExchangeModel');
+
+
 dotenv.config();
 
 
@@ -43,7 +48,6 @@ async function saveMonstersToDatabase() {
       const data = await fs.readFile(path.resolve(__dirname, 'files', 'monsters-complete.json'), 'utf8');
       const monsters = JSON.parse(data);
         
-  
    
       if (monsters) {
         for (var monster in monsters) {
@@ -51,7 +55,6 @@ async function saveMonstersToDatabase() {
             await Simulator.create(monsters[monster])
             }
         }
-       
         console.log('Monsters data saved to database successfully!');
       } else {
         console.log('No monsters data found to save to database.');
@@ -61,6 +64,75 @@ async function saveMonstersToDatabase() {
     }
   }
 
+
+  async function grandExchangeItemToDatabase() {
+    try {
+        const url = 'https://prices.runescape.wiki/api/v1/osrs/latest';
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        const items = data.data;
+
+        if (items) {
+            for (const [itemId, itemData] of Object.entries(items)) {
+                const existingItem = await GrandExchangeItem.findOne({ id: itemId });
+                
+                if (!existingItem) {
+                    await GrandExchangeItem.create({
+                        id: itemId,
+                        high: itemData.high,
+                        highTime: itemData.highTime,
+                        low: itemData.low,
+                        lowTime: itemData.lowTime
+                    });
+                }
+            }
+            console.log('Items data saved to database successfully!');
+        } else {
+            console.log('No items data found to save to database.');
+        }
+    } catch (error) {
+        console.error('Error saving items to database:', error);
+    }
+}
+
+
+async function saveItemsToDatabase() {
+    try {
+        const url = 'https://prices.runescape.wiki/api/v1/osrs/mapping';
+        const response = await fetch(url)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return res.json();
+        })
+        .catch(error => {
+            throw new Error('There was a problem with the fetch operation:', error.message);
+        });
+
+        const items = response;
+        console.log(items[0])
+        if (items) {
+            for (const item of items) {
+                const existingItem = await Item.findOne({ id: item.id });
+                
+                if (!existingItem) {
+                    await Item.create(item);
+                }
+            }
+            console.log('Items data saved to database successfully!');
+        } else {
+            console.log('No items data found to save to database.');
+        }
+    } catch (error) {
+        console.error('Error saving items to database:', error);
+    }
+}
 
 var databaseURL = "";
 switch (process.env.NODE_ENV.toLowerCase()) {
@@ -95,7 +167,7 @@ databaseConnector(databaseURL).then(() => {
 
         collections.map((collection) => collection.name)
         .forEach(async (collectionName) => {
-           if (collectionName !== "Simulator") {
+           if (collectionName !== "simulators" || collectionName !== "items") {
             mongoose.connection.db.dropCollection(collectionName);
            }
         });
@@ -108,6 +180,8 @@ databaseConnector(databaseURL).then(() => {
     const uim_theo = await fetchPlayerData("UIM Theo")
     await User.insertMany(users)
     await saveMonstersToDatabase()
+    await saveItemsToDatabase()
+    await grandExchangeItemToDatabase()
 
     console.log("New DB data created.");
 }).then(() => {

@@ -3,7 +3,7 @@ const router = express.Router();
 const Item = require('../models/itemModel');
 
 // Route to get item by ID or name
-router.get('/items/:query', async (req, res) => {
+router.get('/grand-exchange/:query', async (req, res) => {
     try {
         const { query } = req.params;
 

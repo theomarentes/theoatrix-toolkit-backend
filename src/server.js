@@ -68,6 +68,9 @@ app.use("/user", userController);
 const simulatorController = require("./controllers/SimulatorRoutes");
 app.use("/simulator", simulatorController);
 
+const geController = require("./controllers/GrandExchangeRoutes");
+app.use("/ge", geController);
+
 app.get("/databaseDump", async (request, response) => {
 
     const dumpContainer = {};

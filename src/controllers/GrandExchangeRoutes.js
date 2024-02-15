@@ -8,7 +8,7 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-router.get('item/:query', async (req, res) => {
+router.get('/item/:query', async (req, res) => {
     try {
         const { query } = req.params;
 

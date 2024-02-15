@@ -3,6 +3,10 @@ const router = express.Router();
 const {Item} = require('../models/ItemModel');
 const {GrandExchangeItem} = require('../models/GrandExchangeModel');
 
+function capitalizeFirstLetter(string) {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 router.get('/:query', async (req, res) => {
     try {
@@ -23,7 +27,7 @@ router.get('/:query', async (req, res) => {
             });
         } else {
             
-            const item = await Item.findOne({ name: query.toLowerCase() });
+            const item = await Item.findOne({ name: capitalizeFirstLetter(query) });
             
             if (!item) {
                 return res.status(404).send({ error: 'Item not found' });

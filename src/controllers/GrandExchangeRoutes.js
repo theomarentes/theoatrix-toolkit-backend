@@ -8,7 +8,7 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-router.get('/:query', async (req, res) => {
+router.get('item/:query', async (req, res) => {
     try {
         const { query } = req.params;
 
@@ -41,6 +41,31 @@ router.get('/:query', async (req, res) => {
                 prices: itemPrices
             });
         }
+    } catch (error) {
+        
+        res.status(500).send(error);
+    }
+});
+
+
+router.get('/top10', async (req, res) => {
+    try {
+        
+        GrandExchangeItem.find({})
+            .sort({'prices.low': -1}) // Sort by the 'prices.low' field in descending order
+            .limit(10) // Limit the results to the top 10
+            .then(items => {
+                return res.send({
+                    items
+                });
+           })
+            .catch(error => {
+                console.error('Error fetching items:', error);
+            });
+        
+            
+           
+       
     } catch (error) {
         
         res.status(500).send(error);

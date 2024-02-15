@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const Item = require('../models/itemModel');
+const {Item} = require('../models/ItemModel');
 
 // Route to get item by ID or name
-router.get('/items/:query', async (req, res) => {
+router.get('/:query', async (req, res) => {
     try {
         const { query } = req.params;
 
         // Check if the query is a number
         if (!isNaN(query)) {
             // Find an item in the database by its ID
-            const item = await Item.findById(query);
+            const item = await Item.findOne({id: query});
             // If the item does not exist send a 404 status code with a message
             if (!item) {
                 return res.status(404).send({ error: 'Item not found' });

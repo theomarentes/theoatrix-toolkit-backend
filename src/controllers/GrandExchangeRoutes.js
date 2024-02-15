@@ -1,34 +1,44 @@
 const express = require('express');
 const router = express.Router();
 const {Item} = require('../models/ItemModel');
+const {GrandExchangeItem} = require('../models/GrandExchangeModel');
 
-// Route to get item by ID or name
+
 router.get('/:query', async (req, res) => {
     try {
         const { query } = req.params;
 
-        // Check if the query is a number
+        
         if (!isNaN(query)) {
-            // Find an item in the database by its ID
+            
             const item = await Item.findOne({id: query});
-            // If the item does not exist send a 404 status code with a message
+            
             if (!item) {
                 return res.status(404).send({ error: 'Item not found' });
             }
-            // Send a response with the found item
-            return res.send(item);
+            const itemPrices = await GrandExchangeItem.findOne({ id: item.id});
+            return res.send({
+                item: item,
+                prices: itemPrices
+            });
         } else {
-            // Find an item in the database by its name
-            const item = await Item.findOne({ name: query });
-            // If the item does not exist, send a 404 status code with a message
+            
+            const item = await Item.findOne({ name: query.toLowerCase() });
+            
             if (!item) {
                 return res.status(404).send({ error: 'Item not found' });
             }
-            // Send a response with the found item
-            return res.send(item);
+
+            const itemPrices = await GrandExchangeItem.findOne({ id: item.id});
+         
+            
+            return res.send({
+                item: item,
+                prices: itemPrices
+            });
         }
     } catch (error) {
-        // If an error occurs, send a 500 status code with the error message
+        
         res.status(500).send(error);
     }
 });

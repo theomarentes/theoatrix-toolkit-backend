@@ -52,7 +52,7 @@ router.get('/top10', async (req, res) => {
     try {
         
         GrandExchangeItem.find({})
-            .sort({'prices.low': -1}) // Sort by the 'prices.low' field in descending order
+            .sort({'low': -1}) // Sort by the 'prices.low' field in descending order
             .limit(10) // Limit the results to the top 10
             .then(items => {
                 return res.send({

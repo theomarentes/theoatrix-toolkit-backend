@@ -21,7 +21,7 @@ app.use(helmet.contentSecurityPolicy({
 
 const cors = require('cors');
 var corsOptions = {
-    origin: ["http://localhost:3000", "https://toolkit.theoatrix.net", "https://stunning-empanada-010d7f.netlify.app"],
+    origin: ["http://localhost:3000", "https://toolkit.theoatrix.net", "https://stunning-empanada-010d7f.netlify.app", "127.0.0.1:80"],
     optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));

@@ -1,6 +1,6 @@
-// Import Express
+
 const express = require('express');
-// Create an instance of an Express Router
+
 const router = express.Router();
 
 const { User } = require('../models/UserModel');
@@ -53,18 +53,18 @@ router.post('/sign-in', async (request, response) => {
         const { email, password } = request.body;
         const targetUser = await User.findOne({ email }).exec();
 
-        // Check if user exists
+        
         if (!targetUser) {
             return response.status(404).json({ message: "User not found." });
         }
 
-        // Validate password
+        
         const isPasswordValid = await validateHashedData(password, targetUser.password);
         if (!isPasswordValid) {
             return response.status(401).json({ message: "Incorrect password." });
         }
 
-        // Generate JWT without including the password
+        
         const encryptedUserJwt = await generateUserJWT({
             _id: targetUser._id,
             email: targetUser.email,
@@ -79,14 +79,14 @@ router.post('/sign-in', async (request, response) => {
 });
 
 
-// FIX
+
 router.post('/token-refresh', async(request, response) => {
     let oldToken = request.body.jwt;
     let refreshResult = await verifyUserJWT(oldToken).catch(error => {return {error: error.message}})
     response.json(refreshResult);
 });
 
-// FIX
+
 router.put('/:userID', async (request, response) => {
     let userDetails = {
         _id: request.params.userID,
@@ -113,12 +113,12 @@ const verifyJwtHeader = async (request, response, next) => {
 }
 
 const verifyJwt = async (request, response, next) => {
-    // Verify that the JWT is still valid.
+    
     if (request.headers.jwt) {
     let userJwtVerified = jwt.verify(request.headers.jwt,process.env.JWT_SECRET, {complete: true});
-    // Decrypt the encrypted payload.
+    
     let decryptedJwtPayload = decryptString(userJwtVerified.payload.data);
-    // Parse the decrypted data into an object.
+    
     request.userData = JSON.parse(decryptedJwtPayload);
     }
 
@@ -127,14 +127,14 @@ const verifyJwt = async (request, response, next) => {
 
 
 router.get('/me', verifyJwt, async (request, response) => {
-    const userId = request.userData._id; // Extract user ID from userData added by verifyJwt middleware
+    const userId = request.userData._id; 
 
     try {
         const user = await User.findById(userId);
         if (!user) {
             return response.status(404).json({ message: "User not found." });
         }
-        response.json({ user: user }); // This now includes the full user document, including favourites
+        response.json({ user: user }); 
     } catch (error) {
         console.error('Error fetching user data:', error);
         response.status(500).json({ message: "An error occurred while fetching user data." });
@@ -143,20 +143,20 @@ router.get('/me', verifyJwt, async (request, response) => {
 
 
 router.post('/add-favourite', verifyJwt, async (request, response) => {
-    const { url } = request.body; // Assuming the favorite URL is sent in the request body
-    const userId = request.userData._id; // Extract user ID from userData added by verifyJwt middleware
+    const { url } = request.body; 
+    const userId = request.userData._id; 
 
     if (!url) {
         return response.status(400).json({ message: "No URL provided." });
     }
 
     try {
-        // Find the user and update their document by adding the URL to their favourites array
-        // $addToSet ensures the URL is added only if it's not already present, to avoid duplicates
+        
+        
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { $addToSet: { favourites: url } },
-            { new: true } // Return the updated document
+            { new: true } 
         );
 
         if (!updatedUser) {
@@ -171,8 +171,8 @@ router.post('/add-favourite', verifyJwt, async (request, response) => {
 });
 
 router.post('/remove-favourite', verifyJwt, async (request, response) => {
-    const { url } = request.body; // Assuming the favorite URL is sent in the request body
-    const userId = request.userData._id; // Extract user ID from userData added by verifyJwt middleware
+    const { url } = request.body; 
+    const userId = request.userData._id; 
 
     if (!url) {
         return response.status(400).json({ message: "No URL provided." });
@@ -196,7 +196,41 @@ router.post('/remove-favourite', verifyJwt, async (request, response) => {
     }
 });
 
+router.put('/change-password', verifyJwt, async (request, response) => {
+    
+    const userId = request.userData._id;
+
+    
+    const { oldPassword, newPassword } = request.body;
+
+    try {
+        
+        const user = await User.findById(userId);
+
+        
+        if (!user) {
+            return response.status(404).json({ message: "User not found." });
+        }
+
+        
+        const isPasswordValid = await validateHashedData(oldPassword, user.password);
+        if (!isPasswordValid) {
+            return response.status(401).json({ message: "Incorrect old password." });
+        }
+
+        
+        const hashedNewPassword = await hashString(newPassword);
+
+        
+        user.password = hashedNewPassword;
+        await user.save();
+
+        response.json({ message: "Password changed successfully." });
+    } catch (error) {
+        console.error('Error changing password:', error);
+        response.status(500).json({ message: "An error occurred while changing the password." });
+    }
+});
 
 
-// Export the router so that other files can use it:
 module.exports = router;

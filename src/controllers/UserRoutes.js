@@ -115,11 +115,16 @@ const verifyJwtHeader = async (request, response, next) => {
 const verifyJwt = async (request, response, next) => {
     
     if (request.headers.jwt) {
-    let userJwtVerified = jwt.verify(request.headers.jwt,process.env.JWT_SECRET, {complete: true});
+    try {
+        let userJwtVerified = jwt.verify(request.headers.jwt,process.env.JWT_SECRET, {complete: true});
     
     let decryptedJwtPayload = decryptString(userJwtVerified.payload.data);
     
     request.userData = JSON.parse(decryptedJwtPayload);
+} catch (error) {
+    console.error('Error verifying JWT:', error);
+    return response.status(401).json({ message: "Invalid JWT." });
+}
     }
 
     next();

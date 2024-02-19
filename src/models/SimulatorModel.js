@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 
 const SimulatorSchema = new mongoose.Schema({
-
- 
     "id": {
       "type": "Number"
     },

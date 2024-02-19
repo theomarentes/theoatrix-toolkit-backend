@@ -2,7 +2,7 @@
 const express = require('express');
 
 const router = express.Router();
-import { verifyJwt, verifyJwtHeader} from './functions/UserFunctions.js';
+const { verifyJwt, verifyJwtHeader} = require('./functions/UserFunctions.js');
 
 const { User } = require('../models/UserModel');
 const jwt = require('jsonwebtoken');

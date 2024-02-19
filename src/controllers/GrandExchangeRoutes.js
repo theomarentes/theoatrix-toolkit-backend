@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {Item} = require('../models/ItemModel');
 const {GrandExchangeItem} = require('../models/GrandExchangeModel');
-import { capitalizeFirstLetter } from './functions/GrandExchangeFunctions';
+const { capitalizeFirstLetter } = require('./functions/GrandExchangeFunctions');
 
 router.get('/item/:query', async (req, res) => {
     try {

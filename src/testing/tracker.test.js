@@ -1,11 +1,11 @@
 const request = require('supertest');
 const express = require('express');
-const router = require('../controllers/UserRoutes'); // Adjust the path to where your router is located
+const router = require('../controllers/UserRoutes');
 
 
 const app = express();
 app.use(express.json());
-app.use('/tracker', router); // Assuming your routes are prefixed with '/tracker'
+app.use('/tracker', router); 
 
 describe('Tracker API', () => {
   describe('GET /tracker/1', () => {
@@ -13,7 +13,6 @@ describe('Tracker API', () => {
       const res = await request("https://theoatrix-toolkit-backend-139a9c3c7d4b.herokuapp.com").get('/tracker/1');
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty('trackerDetails');
-      // Add more expectations as needed
     });
   });
 
@@ -23,7 +22,7 @@ describe('Tracker API', () => {
       const res = await request("https://theoatrix-toolkit-backend-139a9c3c7d4b.herokuapp.com").get(`/tracker/${rsn}`);
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty('data');
-      // Add more expectations as needed
+ 
     });
   });
 
@@ -33,7 +32,7 @@ describe('Tracker API', () => {
       const res = await request("https://theoatrix-toolkit-backend-139a9c3c7d4b.herokuapp.com").get(`/tracker/${rsn}`);
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty('data');
-      // Add more expectations as needed
+    
     });
   });
 });

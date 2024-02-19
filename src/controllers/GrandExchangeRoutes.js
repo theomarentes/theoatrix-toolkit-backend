@@ -2,11 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {Item} = require('../models/ItemModel');
 const {GrandExchangeItem} = require('../models/GrandExchangeModel');
-
-function capitalizeFirstLetter(string) {
-    if (!string) return '';
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
+import { capitalizeFirstLetter } from './functions/GrandExchangeFunctions';
 
 router.get('/item/:query', async (req, res) => {
     try {
@@ -52,8 +48,8 @@ router.get('/top10', async (req, res) => {
     try {
         
         GrandExchangeItem.find({})
-            .sort({'low': -1}) // Sort by the 'prices.low' field in descending order
-            .limit(10) // Limit the results to the top 10
+            .sort({'low': -1}) 
+            .limit(10) 
             .then(items => {
                 return res.send({
                     items

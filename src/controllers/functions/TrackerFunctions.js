@@ -87,7 +87,6 @@ async function fetchPlayerData(username) {
  
 
   async function getAllTrackers(){
-    // Returns an array of raw MongoDB database documents.
     return await Tracker.find({});
 
 }

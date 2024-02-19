@@ -1,6 +1,6 @@
-// Import Express
+
 const express = require('express');
-// Create an instance of an Express Router
+
 const router = express.Router();
 
 const { getAllTrackers, fetchPlayerData, updatePlayerData } = require("./functions/TrackerFunctions.js")
@@ -30,5 +30,5 @@ router.post('/:rsn', async (request, response) => {
 });
 
 
-// Export the router so that other files can use it:
+
 module.exports = router;

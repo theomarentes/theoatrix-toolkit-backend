@@ -2,11 +2,12 @@
 const express = require('express');
 
 const router = express.Router();
+import { verifyJwt, verifyJwtHeader} from './functions/UserFunctions.js';
 
 const { User } = require('../models/UserModel');
 const jwt = require('jsonwebtoken');
 const {
-    encryptString, decryptString, decryptObject, hashString, validateHashedData, 
+    encryptString, decryptString,  hashString, validateHashedData, 
     generateJWT, generateUserJWT, verifyUserJWT, 
     getAllUsers, createUser, updateUser, deleteUser
 } = require('./functions/UserFunctions.js');
@@ -99,36 +100,7 @@ router.put('/:userID', async (request, response) => {
 
 
 
-const verifyJwtHeader = async (request, response, next) => {
-    let rawJwtHeader = request.headers.jwt;
-    
-    if (rawJwtHeader) {
-    let jwtRefresh = await verifyUserJWT(rawJwtHeader);
-    request.headers.jwt = jwtRefresh;
-    }
 
-    
-
-    next();
-}
-
-const verifyJwt = async (request, response, next) => {
-    
-    if (request.headers.jwt) {
-    try {
-        let userJwtVerified = jwt.verify(request.headers.jwt,process.env.JWT_SECRET, {complete: true});
-    
-    let decryptedJwtPayload = decryptString(userJwtVerified.payload.data);
-    
-    request.userData = JSON.parse(decryptedJwtPayload);
-} catch (error) {
-    console.error('Error verifying JWT:', error);
-    return response.status(401).json({ message: "Invalid JWT." });
-}
-    }
-
-    next();
-}
 
 
 router.get('/me', verifyJwt, async (request, response) => {

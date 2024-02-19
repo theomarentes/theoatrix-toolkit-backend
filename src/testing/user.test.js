@@ -37,10 +37,8 @@ describe('POST /user/sign-up', () => {
       password: 'password123'
     };
 
-    // First request to create the user
     await request(app).post('/user/sign-up').send(userData);
 
-    // Second request should detect duplicate user
     const response = await request(app)
       .post('/user/sign-up')
       .send(userData);

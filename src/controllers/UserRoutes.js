@@ -173,8 +173,7 @@ router.post('/remove-favourite', verifyJwt, async (request, response) => {
     }
 });
 
-router.put('/change-password', verifyJwt, async (request, response) => {
-    
+router.patch('/change-password', verifyJwt, async (request, response) => {
     const userId = request.userData._id;
 
     
